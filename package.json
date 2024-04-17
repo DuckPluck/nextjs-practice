@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "concurrently \"yarn server\" \"next dev\"",
+    "server": "json-server -w ./db.json -p 3001",
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
     "start": "next start"
@@ -14,8 +15,11 @@
     "@types/node": "20.5.7",
     "@vercel/postgres": "^0.5.0",
     "autoprefixer": "10.4.15",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
+    "concurrently": "^8.2.2",
+    "json-server": "^1.0.0-alpha.23",
     "next": "^14.0.2",
     "postcss": "8.4.31",
     "react": "18.2.0",
