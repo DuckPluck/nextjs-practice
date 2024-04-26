@@ -81,7 +81,7 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await axios.get('http://localhost:3001/invoices')
+    const invoices = await axios.get(`http://localhost:3001/invoices?_limit=${ITEMS_PER_PAGE}&_start=${offset}&name=${query}`)
 
     return invoices.data;
   } catch (error) {
