@@ -1,4 +1,3 @@
-import { Customer, LatestInvoiceRaw, User, } from './definitions';
 import { formatCurrency } from './utils';
 import axios from 'axios';
 
@@ -92,10 +91,9 @@ export async function fetchFilteredInvoices(
 
 export async function fetchInvoicesPages(query: string) {
   try {
-    const count = await axios.get('http://localhost:3001/invoices')
+    const count = await axios.get(`http://localhost:3001/invoices?name=${query}`)
 
-    const totalPages = Math.ceil(Number(count.data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
+    return Math.ceil(Number(count.data.length) / ITEMS_PER_PAGE);
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of invoices.');
@@ -104,9 +102,9 @@ export async function fetchInvoicesPages(query: string) {
 
 export async function fetchInvoiceById(id: string) {
   try {
-    const data = await axios.get(`http://localhost:3001/invoices/${id}`)
+    const data = await axios.get(`http://localhost:3001/invoices?id=${id}`)
 
-    const invoice = data.data.map((invoice) => ({
+    const invoice = data.data.map((invoice: Invoice) => ({
       ...invoice,
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
@@ -123,8 +121,7 @@ export async function fetchCustomers() {
   try {
     const response = await axios.get('http://localhost:3001/customers');
 
-    const customers = response.data;
-    return customers;
+    return response.data;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
