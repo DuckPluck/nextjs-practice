@@ -5,7 +5,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { CardsSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
 
-export const dynamic = 'force-dynamic'; // prevent cache for fetch data on server
+export const dynamic = 'force-dynamic'; // prevent caching for fetch data from server
 
 export default async function Page() {
   return (

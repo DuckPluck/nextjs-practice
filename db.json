@@ -76,7 +76,7 @@
       "name": "Delba de Oliveira",
       "email": "delba@oliveira.com",
       "image_url": "/customers/delba-de-oliveira.png",
-      "amount": 15795,
+      "amount": 0,
       "status": "pending",
       "date": "2022-12-06"
     },
@@ -132,10 +132,10 @@
     },
     {
       "id": "12",
-      "customer_id": "3958dc9e-712f-4377-85e9-fec4b6a6442a",
-      "name": "Delba de Oliveira",
-      "email": "delba@oliveira.com",
-      "image_url": "/customers/delba-de-oliveira.png",
+      "customer_id": "13D07535-C59E-4157-A011-F8D2EF4E0CBB",
+      "name": "Balazs Orban",
+      "email": "balazs@orban.com",
+      "image_url": "/customers/balazs-orban.png",
       "amount": 666,
       "status": "paid",
       "date": "2023-06-27"
