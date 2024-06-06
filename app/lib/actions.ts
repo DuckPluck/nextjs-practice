@@ -8,9 +8,15 @@ import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(['pending', 'paid']),
+  customerId: z.string({
+    invalid_type_error: 'Please select a customer.',
+  }),
+  amount: z.coerce
+    .number()
+    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+  status: z.enum(['pending', 'paid'], {
+    invalid_type_error: 'Please select an invoice status.'
+  }),
   date: z.string(),
 });
 
@@ -18,22 +24,39 @@ const FormSchema = z.object({
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
-export async function createInvoice(formData: FormData) {
-  const rawFormData = CreateInvoice.parse({
+export type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createInvoice(prevState: State, formData: FormData) {
+  const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
-  const amountInCents = rawFormData.amount * 100;
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.'
+    };
+  }
+
+  const amountInCents = validatedFields.data.amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
-  const customerData: {data: Customer[]} = await axios.get(`http://localhost:3001/customers?id=${rawFormData.customerId}`);
+  const customerData: {data: Customer[]} = await axios.get(`http://localhost:3001/customers?id=${validatedFields.data.customerId}`);
 
   const invoiceData = {
-    customer_id: rawFormData.customerId,
+    customer_id: validatedFields.data.customerId,
     amount: amountInCents,
     date,
-    status: rawFormData.status,
+    status: validatedFields.data.status,
     image_url: customerData.data[0].image_url,
     name: customerData.data[0].name,
     email: customerData.data[0].email,
@@ -50,12 +73,21 @@ export async function createInvoice(formData: FormData) {
   redirect('/dashboard/invoices');
 }
 
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({
+export async function updateInvoice(prevState: State, id: string, formData: FormData) {
+  const validateFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
+
+  if (!validateFields.success) {
+    return {
+      errors: validateFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Edit Invoice.'
+    };
+  }
+
+  const { customerId, amount, status } = validateFields.data;
 
   const amountInCents = amount * 100;
 
