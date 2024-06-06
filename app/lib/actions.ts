@@ -84,10 +84,10 @@ export async function updateInvoice(id: string, formData: FormData) {
 export async function deleteInvoice(id: string) {
   try {
     await axios.delete(`http://localhost:3001/invoices/${id}`);
+    revalidatePath('/dashboard/invoices');
+    return { message: 'Deleted Invoice.' };
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to delete invoice.')
   }
-
-  revalidatePath('/dashboard/invoices');
 }
