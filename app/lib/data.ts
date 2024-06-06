@@ -132,7 +132,7 @@ export async function fetchFilteredCustomers(query: string) {
   try {
     const response = await axios.get('http://localhost:3001/customers');
 
-    const customers = response.data.map((customer) => ({
+    const customers = response.data.map((customer: CustomersTableType) => ({
       ...customer,
       total_pending: formatCurrency(customer.total_pending),
       total_paid: formatCurrency(customer.total_paid),
@@ -147,7 +147,7 @@ export async function fetchFilteredCustomers(query: string) {
 
 export async function getUser(email: string) {
   try {
-    const response = await axios.get(`http://localhost:3001/customers${email}`);
+    const response = await axios.get(`http://localhost:3001/users${email}`);
     return response.data[0] as User;
   } catch (error) {
     console.error('Failed to fetch user:', error);
