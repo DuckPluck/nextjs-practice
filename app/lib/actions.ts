@@ -5,7 +5,6 @@ import axios from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
 
 
 const FormSchema = z.object({
@@ -133,7 +132,7 @@ export async function authenticate(
   try {
     await signIn('credentials', formData);
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error && 'type' in error) {
       switch (error.type) {
         case 'CredentialsSignin':
           return 'Invalid credentials.';
